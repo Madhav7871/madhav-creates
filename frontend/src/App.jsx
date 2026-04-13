@@ -2,12 +2,20 @@ import React, { useEffect, useRef, useState } from "react";
 import "./App.css";
 
 const Portfolio = () => {
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [backendProjects, setBackendProjects] = useState([]);
+  const [backendLoading, setBackendLoading] = useState(true);
+  const [githubRepos, setGithubRepos] = useState([]);
+  const [githubLoading, setGithubLoading] = useState(true);
   const [scrollProgress, setScrollProgress] = useState(0);
   const heroScrollRef = useRef(null);
   const canvasRef = useRef(null);
   const imageRef = useRef(null);
+
+  const socialLinks = {
+    github: "https://github.com/Madhav7871",
+    linkedin: "https://www.linkedin.com/in/madhav-kalra-807252242/",
+  };
+
   const skills = [
     "C++",
     "Java",
@@ -15,18 +23,44 @@ const Portfolio = () => {
     "React.js",
     "Node.js",
     "OpenCV",
+    "JavaScript",
+    "Git & GitHub",
     "Data Structures & Algorithms",
   ];
 
-  // Fetch data from your backend API
+  const topGithubRepos = githubRepos
+    .filter((repo) => !repo.fork)
+    .sort((a, b) => b.stargazers_count - a.stargazers_count)
+    .slice(0, 6);
+
+  // Fetch projects from your backend API
   useEffect(() => {
     fetch("http://localhost:5000/api/projects")
       .then((response) => response.json())
       .then((data) => {
-        setProjects(data);
-        setLoading(false);
+        setBackendProjects(data);
+        setBackendLoading(false);
       })
-      .catch((error) => console.error("Error fetching projects:", error));
+      .catch((error) => {
+        console.error("Error fetching backend projects:", error);
+        setBackendLoading(false);
+      });
+  }, []);
+
+  // Fetch repositories directly from your GitHub profile
+  useEffect(() => {
+    fetch("https://api.github.com/users/Madhav7871/repos?sort=updated&per_page=20")
+      .then((response) => response.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setGithubRepos(data);
+        }
+        setGithubLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching GitHub repos:", error);
+        setGithubLoading(false);
+      });
   }, []);
 
   useEffect(() => {
@@ -110,6 +144,7 @@ const Portfolio = () => {
           <canvas ref={canvasRef} className="hero-canvas" />
 
           <div className="hero-overlay hero-overlay-center">
+            <p className="hero-tagline">Software Developer and Tech Learner</p>
             <h1
               className="hero-name"
               style={{
@@ -126,8 +161,26 @@ const Portfolio = () => {
                 transform: `translateY(${(1 - roleOpacity) * 20}px)`,
               }}
             >
-              Senior Full Stack Developer
+              CSE Student | Developer | Problem Solver
             </h2>
+            <div className="hero-actions">
+              <a
+                href={socialLinks.github}
+                target="_blank"
+                rel="noreferrer"
+                className="hero-btn hero-btn-primary"
+              >
+                Explore GitHub
+              </a>
+              <a
+                href={socialLinks.linkedin}
+                target="_blank"
+                rel="noreferrer"
+                className="hero-btn hero-btn-secondary"
+              >
+                Connect on LinkedIn
+              </a>
+            </div>
           </div>
 
           <div className="scroll-hint">Scroll Down</div>
@@ -135,6 +188,38 @@ const Portfolio = () => {
       </section>
 
       <div className="portfolio-container">
+        <section className="about-section">
+          <h2>About Me</h2>
+          <p>
+            Hi, I am Madhav Kalra. I am currently pursuing B.Tech in Computer
+            Science Engineering from Bhagwan Parshuram Institute of Technology.
+            Before this, I completed a Diploma in Electronics and Communication
+            Engineering from Guru Tegh Bahadur Polytechnic Institute.
+          </p>
+          <p>
+            My ECE background built my foundation in technology, and now I am
+            diving deep into software development, programming, and modern web
+            technologies. I enjoy building projects, learning continuously, and
+            collaborating with people who love creating impactful ideas.
+          </p>
+        </section>
+
+        <section className="education-section">
+          <h2>Education</h2>
+          <div className="timeline">
+            <article className="timeline-card">
+              <h3>B.Tech in Computer Science Engineering</h3>
+              <p>Bhagwan Parshuram Institute of Technology</p>
+              <span>Current</span>
+            </article>
+            <article className="timeline-card">
+              <h3>Diploma in Electronics and Communication Engineering</h3>
+              <p>Guru Tegh Bahadur Polytechnic Institute</p>
+              <span>Completed</span>
+            </article>
+          </div>
+        </section>
+
         {/* Skills Section */}
         <section className="skills-section">
           <h2>Technical Arsenal</h2>
@@ -147,15 +232,43 @@ const Portfolio = () => {
           </div>
         </section>
 
+        <section className="projects-section">
+          <h2>GitHub Project Highlights</h2>
+          {githubLoading ? (
+            <p className="loading-text">Loading GitHub projects...</p>
+          ) : (
+            <div className="project-grid">
+              {topGithubRepos.map((repo) => (
+                <article key={repo.id} className="project-card">
+                  <h3>{repo.name}</h3>
+                  <p>{repo.description || "No description added yet."}</p>
+                  <div className="repo-meta">
+                    <span>Stars: {repo.stargazers_count}</span>
+                    <span>Language: {repo.language || "N/A"}</span>
+                  </div>
+                  <a
+                    className="project-link"
+                    href={repo.html_url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    View Repository
+                  </a>
+                </article>
+              ))}
+            </div>
+          )}
+        </section>
+
         {/* Projects Section */}
         <section className="projects-section">
-          <h2>Featured Projects (Fetched from Backend)</h2>
+          <h2>Featured Projects</h2>
 
-          {loading ? (
+          {backendLoading ? (
             <p className="loading-text">Loading projects from server...</p>
           ) : (
             <div className="project-grid">
-              {projects.map((project) => (
+              {backendProjects.map((project) => (
                 <div key={project.id} className="project-card">
                   <h3>{project.title}</h3>
                   <p>{project.description}</p>
@@ -170,6 +283,22 @@ const Portfolio = () => {
               ))}
             </div>
           )}
+        </section>
+
+        <section className="connect-section">
+          <h2>Let us Connect</h2>
+          <p>
+            If you are interested in technology, collaboration, or discussing
+            innovative ideas, feel free to connect with me.
+          </p>
+          <div className="connect-links">
+            <a href={socialLinks.github} target="_blank" rel="noreferrer">
+              GitHub Profile
+            </a>
+            <a href={socialLinks.linkedin} target="_blank" rel="noreferrer">
+              LinkedIn Profile
+            </a>
+          </div>
         </section>
       </div>
     </main>
