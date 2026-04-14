@@ -1,13 +1,14 @@
 /* --- Global Variables & Reset --- */
 :root {
   --bg-color: #040814;
-  --card-bg: rgba(13, 21, 42, 0.72);
+  --card-bg: rgba(12, 22, 42, 0.76);
   --text-main: #f8fafc;
   --text-muted: #afbdd8;
-  --accent: #6ea8fe;
-  --accent-soft: #9c7bff;
+  --accent: #63b3ff;
+  --accent-soft: #a26dff;
+  --accent-warm: #ff7bc3;
   --accent-hover: #4d95ff;
-  --border-color: rgba(115, 146, 213, 0.32);
+  --border-color: rgba(122, 154, 231, 0.28);
 }
 
 * {
@@ -24,8 +25,9 @@ body {
     sans-serif;
   background-color: var(--bg-color);
   background-image:
-    radial-gradient(circle at 15% 20%, rgba(110, 168, 254, 0.15), transparent 42%),
-    radial-gradient(circle at 82% 12%, rgba(156, 123, 255, 0.12), transparent 38%);
+    radial-gradient(circle at 15% 20%, rgba(99, 179, 255, 0.16), transparent 42%),
+    radial-gradient(circle at 82% 12%, rgba(162, 109, 255, 0.14), transparent 38%),
+    radial-gradient(circle at 50% 0%, rgba(255, 123, 195, 0.08), transparent 28%);
   color: var(--text-main);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -153,6 +155,7 @@ body {
   width: 100%;
   margin: 0 auto;
   padding: 5rem 2rem 7rem;
+  position: relative;
 }
 
 .about-section,
@@ -160,13 +163,22 @@ body {
 .skills-section,
 .projects-section,
 .connect-section {
-  padding: 2.2rem 0;
+  padding: 2.4rem;
+  margin-bottom: 1.5rem;
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgba(10, 18, 35, 0.84), rgba(8, 14, 29, 0.92)),
+    radial-gradient(circle at top left, rgba(96, 188, 255, 0.1), transparent 35%),
+    radial-gradient(circle at top right, rgba(166, 113, 255, 0.1), transparent 30%);
+  border: 1px solid rgba(130, 164, 236, 0.16);
+  box-shadow: 0 22px 60px rgba(2, 6, 18, 0.28);
+  backdrop-filter: blur(10px);
 }
 
 .about-section p {
   max-width: 860px;
   margin: 0 auto 1rem;
-  color: var(--text-muted);
+  color: rgba(222, 232, 252, 0.8);
   text-align: center;
   font-size: 1.04rem;
 }
@@ -182,6 +194,7 @@ body {
   margin-bottom: 2.5rem;
   font-weight: 700;
   text-align: center;
+  letter-spacing: -0.02em;
 }
 
 .about-section h2,
@@ -190,6 +203,18 @@ body {
   margin-bottom: 1.5rem;
   font-weight: 700;
   text-align: center;
+  letter-spacing: -0.02em;
+}
+
+.about-section h2,
+.education-section h2,
+.skills-section h2,
+.projects-section h2,
+.connect-section h2 {
+  background: linear-gradient(120deg, #f8fbff 0%, #8bd4ff 48%, #d4b0ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .timeline {
@@ -201,10 +226,10 @@ body {
 .timeline-card {
   background: linear-gradient(
     160deg,
-    rgba(20, 34, 65, 0.9),
-    rgba(12, 20, 38, 0.85)
+    rgba(22, 37, 69, 0.92),
+    rgba(10, 18, 35, 0.88)
   );
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(124, 164, 246, 0.28);
   padding: 1.25rem;
   border-radius: 14px;
   box-shadow: 0 12px 28px rgba(5, 8, 17, 0.45);
@@ -223,8 +248,8 @@ body {
   display: inline-block;
   margin-top: 0.65rem;
   color: #d2e2ff;
-  background: rgba(110, 168, 254, 0.2);
-  border: 1px solid rgba(110, 168, 254, 0.3);
+  background: rgba(99, 179, 255, 0.16);
+  border: 1px solid rgba(120, 187, 255, 0.34);
   border-radius: 999px;
   padding: 0.24rem 0.66rem;
   font-size: 0.78rem;
@@ -240,19 +265,21 @@ body {
 }
 
 .skill-badge {
-  background-color: rgba(126, 165, 255, 0.12);
-  color: #bfd3ff;
+  background:
+    linear-gradient(135deg, rgba(100, 180, 255, 0.14), rgba(164, 109, 255, 0.14));
+  color: #d8e8ff;
   padding: 0.6rem 1.2rem;
   border-radius: 30px;
   font-size: 0.95rem;
   font-weight: 500;
-  border: 1px solid rgba(126, 165, 255, 0.25);
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  border: 1px solid rgba(146, 176, 255, 0.24);
+  transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .skill-badge:hover {
   transform: translateY(-3px);
   background-color: rgba(126, 165, 255, 0.2);
+  border-color: rgba(255, 123, 195, 0.34);
 }
 
 .projects-section {
@@ -266,33 +293,49 @@ body {
 }
 
 .project-card {
-  background: var(--card-bg);
+  background:
+    linear-gradient(180deg, rgba(16, 28, 54, 0.92), rgba(10, 17, 33, 0.9)),
+    var(--card-bg);
   backdrop-filter: blur(8px);
   padding: 2rem;
-  border-radius: 16px;
-  border: 1px solid var(--border-color);
+  border-radius: 22px;
+  border: 1px solid rgba(129, 164, 236, 0.22);
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.26);
+  position: relative;
+  overflow: hidden;
+}
+
+.project-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top left, rgba(89, 203, 255, 0.12), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(255, 123, 195, 0.08), transparent 28%);
+  pointer-events: none;
 }
 
 .project-card:hover {
   transform: translateY(-8px);
-  border-color: var(--accent);
-  box-shadow: 0 18px 30px -12px rgba(50, 80, 150, 0.45);
+  border-color: rgba(133, 194, 255, 0.54);
+  box-shadow: 0 24px 36px -14px rgba(86, 118, 207, 0.42);
 }
 
 .project-card h3 {
   font-size: 1.4rem;
   color: #f8fafc;
   margin-bottom: 1rem;
+  position: relative;
 }
 
 .project-card p {
-  color: var(--text-muted);
+  color: rgba(224, 232, 250, 0.78);
   margin-bottom: 1.5rem;
   flex-grow: 1;
+  position: relative;
 }
 
 .tech-stack {
@@ -300,6 +343,7 @@ body {
   flex-wrap: wrap;
   gap: 0.6rem;
   margin-top: auto;
+  position: relative;
 }
 
 .tech-item {
@@ -307,34 +351,31 @@ body {
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  background-color: #0b1120;
+  background: rgba(8, 13, 27, 0.88);
   padding: 0.4rem 0.8rem;
-  border-radius: 6px;
-  color: var(--text-muted);
-}
-
-.repo-meta {
-  display: flex;
-  gap: 0.8rem;
-  font-size: 0.82rem;
-  color: #c6d7f8;
-  margin-bottom: 1rem;
+  border-radius: 999px;
+  color: #d5e4ff;
+  border: 1px solid rgba(127, 165, 238, 0.16);
 }
 
 .project-link {
-  margin-top: auto;
+  margin-top: 1.25rem;
   text-decoration: none;
-  color: #d8e7ff;
-  border: 1px solid rgba(148, 178, 239, 0.45);
-  border-radius: 10px;
-  padding: 0.55rem 0.85rem;
+  color: #f6fbff;
+  background: linear-gradient(130deg, rgba(97, 176, 255, 0.9), rgba(162, 109, 255, 0.92));
+  border: 1px solid rgba(185, 218, 255, 0.4);
+  border-radius: 999px;
+  padding: 0.72rem 1rem;
   width: fit-content;
   transition: all 0.2s ease;
+  position: relative;
+  box-shadow: 0 12px 24px rgba(77, 109, 202, 0.28);
 }
 
 .project-link:hover {
-  background: rgba(110, 168, 254, 0.2);
-  border-color: rgba(187, 212, 255, 0.8);
+  transform: translateY(-2px);
+  box-shadow: 0 18px 28px rgba(107, 85, 207, 0.34);
+  border-color: rgba(232, 241, 255, 0.85);
 }
 
 .loading-text {
@@ -350,7 +391,7 @@ body {
 .connect-section p {
   max-width: 760px;
   margin: 0 auto 1.2rem;
-  color: var(--text-muted);
+  color: rgba(224, 232, 250, 0.78);
 }
 
 .connect-links {
@@ -364,14 +405,16 @@ body {
   text-decoration: none;
   color: #e7f0ff;
   padding: 0.65rem 1.1rem;
-  border: 1px solid rgba(177, 201, 245, 0.4);
+  border: 1px solid rgba(177, 201, 245, 0.3);
   border-radius: 999px;
   transition: all 0.2s ease;
+  background: rgba(9, 16, 31, 0.42);
 }
 
 .connect-links a:hover {
   transform: translateY(-2px);
-  background: rgba(110, 168, 254, 0.2);
+  background: linear-gradient(130deg, rgba(99, 179, 255, 0.16), rgba(255, 123, 195, 0.12));
+  border-color: rgba(190, 221, 255, 0.55);
 }
 
 @media (max-width: 768px) {
@@ -389,6 +432,15 @@ body {
 
   .portfolio-container {
     padding: 3rem 1.25rem 5rem;
+  }
+
+  .about-section,
+  .education-section,
+  .skills-section,
+  .projects-section,
+  .connect-section {
+    padding: 1.5rem;
+    border-radius: 22px;
   }
 
   .hero-actions {

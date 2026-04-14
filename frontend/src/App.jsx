@@ -26,12 +26,56 @@ const Portfolio = () => {
     "Data Structures & Algorithms",
   ];
 
+  const fileShareFallback = {
+    title: "ShareFile",
+    description:
+      "A secure real-time sharing platform for nearby device discovery, instant file transfer, and live code collaboration without logins.",
+    techStack: ["React", "Node.js", "Socket.io", "Express"],
+    link: "https://github.com/Madhav7871/FileShare",
+  };
+
   // Fetch projects from your backend API
   useEffect(() => {
     fetch("http://localhost:5000/api/projects")
       .then((response) => response.json())
-      .then((data) => {
-        setBackendProjects(data);
+      .then(async (data) => {
+        let fileShareRepo = null;
+
+        try {
+          const githubResponse = await fetch(
+            "https://api.github.com/repos/Madhav7871/FileShare"
+          );
+          if (githubResponse.ok) {
+            fileShareRepo = await githubResponse.json();
+          }
+        } catch (error) {
+          console.error("Error fetching FileShare repo:", error);
+        }
+
+        const normalizedProjects = data.map((project) => {
+          const isOldDropSync =
+            typeof project.title === "string" &&
+            project.title.trim().toLowerCase() === "dropsync";
+
+          const isShareFile =
+            typeof project.title === "string" &&
+            project.title.trim().toLowerCase() === "sharefile";
+
+          if (!isOldDropSync && !isShareFile) {
+            return project;
+          }
+
+          return {
+            ...project,
+            title: "ShareFile",
+            description:
+              fileShareRepo?.description || fileShareFallback.description,
+            techStack: fileShareFallback.techStack,
+            link: fileShareRepo?.html_url || fileShareFallback.link,
+          };
+        });
+
+        setBackendProjects(normalizedProjects);
         setBackendLoading(false);
       })
       .catch((error) => {
@@ -228,6 +272,16 @@ const Portfolio = () => {
                       </span>
                     ))}
                   </div>
+                  {project.link ? (
+                    <a
+                      className="project-link"
+                      href={project.link}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      View Project
+                    </a>
+                  ) : null}
                 </div>
               ))}
             </div>

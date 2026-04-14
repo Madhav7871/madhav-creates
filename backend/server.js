@@ -28,10 +28,11 @@ const projects = [
   },
   {
     id: 3,
-    title: "DropSync",
-    description: "A platform built for seamless and real-time file sharing.",
-    techStack: ["WebSockets", "JavaScript", "Node.js"],
-    link: "https://github.com/Madhav7871",
+    title: "ShareFile",
+    description:
+      "A secure real-time sharing platform for nearby device discovery, instant file transfer, and live code collaboration without logins.",
+    techStack: ["React", "Node.js", "Socket.io", "Express"],
+    link: "https://github.com/Madhav7871/FileShare",
   },
   {
     id: 4,
