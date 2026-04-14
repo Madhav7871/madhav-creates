@@ -4,6 +4,15 @@ import "./App.css";
 const Portfolio = () => {
   const [backendProjects, setBackendProjects] = useState([]);
   const [backendLoading, setBackendLoading] = useState(true);
+  const [contactModalOpen, setContactModalOpen] = useState(false);
+  const [contactSending, setContactSending] = useState(false);
+  const [contactStatus, setContactStatus] = useState("");
+  const [contactForm, setContactForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
   const [scrollProgress, setScrollProgress] = useState(0);
   const heroScrollRef = useRef(null);
   const canvasRef = useRef(null);
@@ -164,6 +173,47 @@ const Portfolio = () => {
   const nameOpacity = Math.max(0, Math.min(1, (scrollProgress - 0.05) / 0.2));
   const roleOpacity = Math.max(0, Math.min(1, (scrollProgress - 0.25) / 0.2));
 
+  const handleContactInputChange = (event) => {
+    const { name, value } = event.target;
+    setContactForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const submitContactForm = async (event) => {
+    event.preventDefault();
+    setContactStatus("");
+    setContactSending(true);
+
+    try {
+      const response = await fetch("http://localhost:5000/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(contactForm),
+      });
+
+      const result = await response.json();
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "Unable to send message.");
+      }
+
+      setContactStatus("Message sent successfully. Please check your email.");
+      setContactForm({
+        name: "",
+        email: "",
+        phone: "",
+        message: "",
+      });
+    } catch (error) {
+      setContactStatus(error.message || "Something went wrong.");
+    } finally {
+      setContactSending(false);
+    }
+  };
+
   return (
     <main className="portfolio-page">
       <section className="hero-scroll" ref={heroScrollRef}>
@@ -300,6 +350,16 @@ const Portfolio = () => {
             If you are interested in technology, collaboration, or discussing
             innovative ideas, feel free to connect with me.
           </p>
+          <button
+            type="button"
+            className="connect-cta-btn"
+            onClick={() => {
+              setContactStatus("");
+              setContactModalOpen(true);
+            }}
+          >
+            Connect With Me
+          </button>
           <div className="connect-links">
             <a href={socialLinks.github} target="_blank" rel="noreferrer">
               GitHub Profile
@@ -310,6 +370,64 @@ const Portfolio = () => {
           </div>
         </section>
       </div>
+
+      {contactModalOpen ? (
+        <div className="contact-modal-backdrop" onClick={() => setContactModalOpen(false)}>
+          <div className="contact-modal" onClick={(event) => event.stopPropagation()}>
+            <h3>Send a Message</h3>
+            <p>Fill your details and I will connect with you soon.</p>
+            <form className="contact-form" onSubmit={submitContactForm}>
+              <input
+                type="text"
+                name="name"
+                placeholder="Your Name"
+                value={contactForm.name}
+                onChange={handleContactInputChange}
+                required
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Your Email ID"
+                value={contactForm.email}
+                onChange={handleContactInputChange}
+                required
+              />
+              <input
+                type="tel"
+                name="phone"
+                placeholder="Contact Number"
+                value={contactForm.phone}
+                onChange={handleContactInputChange}
+                required
+              />
+              <textarea
+                name="message"
+                placeholder="Your Message"
+                rows="4"
+                value={contactForm.message}
+                onChange={handleContactInputChange}
+                required
+              />
+
+              {contactStatus ? <p className="contact-status">{contactStatus}</p> : null}
+
+              <div className="contact-actions">
+                <button
+                  type="button"
+                  className="contact-btn contact-btn-secondary"
+                  onClick={() => setContactModalOpen(false)}
+                >
+                  Close
+                </button>
+                <button type="submit" className="contact-btn contact-btn-primary" disabled={contactSending}>
+                  {contactSending ? "Sending..." : "Send Message"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      ) : null}
     </main>
   );
 };

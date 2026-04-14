@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors");
+const nodemailer = require("nodemailer");
+require("dotenv").config();
 
 const app = express();
 const PORT = 5000;
@@ -47,6 +49,79 @@ const projects = [
 // API Route to get your projects
 app.get("/api/projects", (req, res) => {
   res.json(projects);
+});
+
+app.post("/api/contact", async (req, res) => {
+  const { name, email, phone, message } = req.body || {};
+
+  if (!name || !email || !phone || !message) {
+    return res.status(400).json({
+      success: false,
+      message: "All fields are required.",
+    });
+  }
+
+  const smtpUser = process.env.SMTP_USER;
+  const smtpPass = process.env.SMTP_PASS;
+  const receiverEmail = process.env.CONTACT_RECEIVER || "madhavkalra@gmail.com";
+
+  if (!smtpUser || !smtpPass) {
+    return res.status(500).json({
+      success: false,
+      message:
+        "Email service is not configured. Set SMTP_USER and SMTP_PASS in backend/.env.",
+    });
+  }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: smtpUser,
+        pass: smtpPass,
+      },
+    });
+
+    await transporter.sendMail({
+      from: `"Portfolio Contact" <${smtpUser}>`,
+      to: receiverEmail,
+      replyTo: email,
+      subject: `New portfolio message from ${name}`,
+      text: `You received a new contact request.
+
+Name: ${name}
+Email: ${email}
+Phone: ${phone}
+Message: ${message}
+`,
+    });
+
+    await transporter.sendMail({
+      from: `"Madhav Kalra" <${smtpUser}>`,
+      to: email,
+      subject: "Thanks for connecting - I will contact you soon",
+      text: `Hi ${name},
+
+Thanks for reaching out. I received your message and will connect with you soon.
+
+Your message:
+${message}
+
+Best regards,
+Madhav Kalra`,
+    });
+
+    return res.json({
+      success: true,
+      message: "Message sent successfully.",
+    });
+  } catch (error) {
+    console.error("Email sending failed:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to send message. Please try again later.",
+    });
+  }
 });
 
 // Start Server
