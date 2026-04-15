@@ -58,7 +58,7 @@ const Portfolio = () => {
 
         try {
           const githubResponse = await fetch(
-            "https://api.github.com/repos/Madhav7871/FileShare"
+            "https://api.github.com/repos/Madhav7871/FileShare",
           );
           if (githubResponse.ok) {
             fileShareRepo = await githubResponse.json();
@@ -125,7 +125,7 @@ const Portfolio = () => {
       const scale = 1 + progressValue * 0.35;
       const coverScale = Math.max(
         viewportWidth / loadedImage.width,
-        viewportHeight / loadedImage.height
+        viewportHeight / loadedImage.height,
       );
       const drawWidth = loadedImage.width * coverScale * scale;
       const drawHeight = loadedImage.height * coverScale * scale;
@@ -268,7 +268,7 @@ const Portfolio = () => {
         <section className="about-section">
           <h2>About Me</h2>
           <p>
-            Hi, I am Madhav Kalra. I am currently pursuing B.Tech in Computer
+            Hello, I am Madhav Kalra. I am currently pursuing B.Tech in Computer
             Science Engineering from Bhagwan Parshuram Institute of Technology.
             Before this, I completed a Diploma in Electronics and Communication
             Engineering from Guru Tegh Bahadur Polytechnic Institute.
@@ -372,8 +372,14 @@ const Portfolio = () => {
       </div>
 
       {contactModalOpen ? (
-        <div className="contact-modal-backdrop" onClick={() => setContactModalOpen(false)}>
-          <div className="contact-modal" onClick={(event) => event.stopPropagation()}>
+        <div
+          className="contact-modal-backdrop"
+          onClick={() => setContactModalOpen(false)}
+        >
+          <div
+            className="contact-modal"
+            onClick={(event) => event.stopPropagation()}
+          >
             <h3>Send a Message</h3>
             <p>Fill your details and I will connect with you soon.</p>
             <form className="contact-form" onSubmit={submitContactForm}>
@@ -410,7 +416,9 @@ const Portfolio = () => {
                 required
               />
 
-              {contactStatus ? <p className="contact-status">{contactStatus}</p> : null}
+              {contactStatus ? (
+                <p className="contact-status">{contactStatus}</p>
+              ) : null}
 
               <div className="contact-actions">
                 <button
@@ -420,7 +428,11 @@ const Portfolio = () => {
                 >
                   Close
                 </button>
-                <button type="submit" className="contact-btn contact-btn-primary" disabled={contactSending}>
+                <button
+                  type="submit"
+                  className="contact-btn contact-btn-primary"
+                  disabled={contactSending}
+                >
                   {contactSending ? "Sending..." : "Send Message"}
                 </button>
               </div>
