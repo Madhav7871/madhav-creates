@@ -85,7 +85,7 @@ app.post("/api/contact", async (req, res) => {
       from: `"Portfolio Contact" <${smtpUser}>`,
       to: receiverEmail,
       replyTo: email,
-      subject: `New portfolio message from ${name}`,
+      subject: `New  message from ${name}`,
       text: `You received a new contact request.
 
 Name: ${name}
