@@ -3,10 +3,20 @@ const cors = require("cors");
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 const app = express();
-const PORT = 5000;
 
-// Middleware
-app.use(cors());
+// Best practice for Render: use the environment port if provided
+const PORT = process.env.PORT || 5000;
+
+// Middleware - Updated for Vercel CORS compatibility
+app.use(
+  cors({
+    origin: [
+      "https://portfolio-omega-gilt-99.vercel.app", // Your live Vercel frontend
+      "http://localhost:5173", // For local testing
+    ],
+    credentials: true,
+  }),
+);
 app.use(express.json());
 
 // Your actual project data
@@ -62,7 +72,8 @@ app.post("/api/contact", async (req, res) => {
 
   const smtpUser = process.env.SMTP_USER;
   const smtpPass = process.env.SMTP_PASS;
-  const receiverEmail = process.env.CONTACT_RECEIVER || "madhavkalra@gmail.com";
+  const receiverEmail =
+    process.env.CONTACT_RECEIVER || "madhavkalra456@gmail.com";
 
   if (!smtpUser || !smtpPass) {
     return res.status(500).json({
@@ -85,29 +96,15 @@ app.post("/api/contact", async (req, res) => {
       from: `"Portfolio Contact" <${smtpUser}>`,
       to: receiverEmail,
       replyTo: email,
-      subject: `New  message from ${name}`,
-      text: `You received a new contact request.
-
-Name: ${name}
-Email: ${email}
-Phone: ${phone}
-Message: ${message}
-`,
+      subject: `New message from ${name}`,
+      text: `You received a new contact request.\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nMessage: ${message}\n`,
     });
 
     await transporter.sendMail({
       from: `"Madhav Kalra" <${smtpUser}>`,
       to: email,
       subject: "Thanks for connecting - I will contact you soon",
-      text: `Hi ${name},
-
-Thanks for reaching out. I received your message and will connect with you soon.
-
-Your message:
-${message}
-
-Best regards,
-Madhav Kalra`,
+      text: `Hi ${name},\n\nThanks for reaching out. I received your message and will connect with you soon.\n\nYour message:\n${message}\n\nBest regards,\nMadhav Kalra`,
     });
 
     return res.json({
@@ -125,5 +122,5 @@ Madhav Kalra`,
 
 // Start Server
 app.listen(PORT, () => {
-  console.log(`Backend server is running on http://localhost:${PORT}`);
+  console.log(`Backend server is running on port ${PORT}`);
 });
