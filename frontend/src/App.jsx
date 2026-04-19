@@ -49,9 +49,9 @@ const Portfolio = () => {
     link: "https://github.com/Madhav7871/FileShare",
   };
 
-  // Fetch projects from your backend API
+  // Fetch projects from your Render backend API
   useEffect(() => {
-    fetch("http://localhost:5000/api/projects")
+    fetch("https://portfolio-iqqn.onrender.com/api/projects")
       .then((response) => response.json())
       .then(async (data) => {
         let fileShareRepo = null;
@@ -122,6 +122,7 @@ const Portfolio = () => {
         return;
       }
 
+      // Responsive math for canvas background scaling
       const scale = 1 + progressValue * 0.35;
       const coverScale = Math.max(
         viewportWidth / loadedImage.width,
@@ -187,13 +188,17 @@ const Portfolio = () => {
     setContactSending(true);
 
     try {
-      const response = await fetch("http://localhost:5000/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      // Replaced localhost with your Render backend URL
+      const response = await fetch(
+        "https://portfolio-iqqn.onrender.com/api/contact",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(contactForm),
         },
-        body: JSON.stringify(contactForm),
-      });
+      );
 
       const result = await response.json();
       if (!response.ok || !result.success) {
@@ -216,6 +221,29 @@ const Portfolio = () => {
 
   return (
     <main className="portfolio-page">
+      {/* Mobile Responsiveness Styles */}
+      <style>{`
+        @media (max-width: 768px) {
+          .hero-overlay { padding: 0 20px; text-align: center; }
+          .hero-name { font-size: 2.5rem !important; }
+          .hero-role { font-size: 1.2rem !important; margin-bottom: 20px; }
+          .hero-actions { display: flex; flex-direction: column; width: 100%; align-items: center; gap: 15px; }
+          .hero-btn { width: 80%; text-align: center; }
+          
+          .portfolio-container { padding: 20px 15px !important; }
+          .about-section, .education-section, .skills-section, .projects-section, .connect-section { padding: 20px 0; }
+          
+          .skills-grid { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important; gap: 10px; }
+          .project-grid { display: grid !important; grid-template-columns: 1fr !important; gap: 20px; }
+          .timeline { flex-direction: column !important; gap: 20px; }
+          
+          .contact-modal { width: 90% !important; max-width: 350px; padding: 20px !important; margin: 0 auto; }
+          .contact-form input, .contact-form textarea { width: 100%; box-sizing: border-box; }
+          .contact-actions { display: flex; flex-direction: column; gap: 10px; }
+          .contact-actions button { width: 100%; }
+        }
+      `}</style>
+
       <section className="hero-scroll" ref={heroScrollRef}>
         <div className="hero-sticky">
           <canvas ref={canvasRef} className="hero-canvas" />
